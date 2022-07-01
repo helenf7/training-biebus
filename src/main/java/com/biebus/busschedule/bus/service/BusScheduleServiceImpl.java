@@ -25,21 +25,25 @@ public class BusScheduleServiceImpl implements BusScheduleService {
   }
 
   @Override
-  public String addNewSchedule(BusSchedule request){
-    Optional<BusSchedule> existSchedule = busScheduleRepository.findById(request.getId());
-    if(Objects.nonNull(existSchedule.get())){
-      throw new InternalError("Schedule already exist !");
-    }
-    else {
-      busScheduleRepository.save(request);
-    }
-    return "Success update schedule " + request.getId();
+  public List<BusSchedule> findScheduleByDestination(String destination) {
+    return busScheduleRepository.findBusSchedulesByDestination(destination);
   }
 
   @Override
-  public String updateSchedule(BusSchedule request){
+  public String addNewSchedule(BusSchedule request){
     busScheduleRepository.save(request);
-    return "Success add new schedule with id: " + request.getId();
+    return "Success update schedule with destination" + request.getDestination();
+  }
+
+  @Override
+  public String updateSchedule(String id, BusSchedule request){
+    Optional<BusSchedule> existSchedule = busScheduleRepository.findById(id);
+    if(existSchedule.isPresent()){
+      busScheduleRepository.save(request);
+      return "Success add new schedule with id: " + id;
+    }
+
+    throw new InternalError("Bus schedule not exist !");
   }
 
   @Override

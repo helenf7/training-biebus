@@ -8,7 +8,7 @@ public interface BusService {
   List<Bus> getAllBus();
   Bus getDetailBusById(Long id);
   String addNewBus(Bus request);
-  String  updateBus(Bus request);
+  String  updateBus(Long id, Bus request);
   void removeBus(Long request);
 
 }

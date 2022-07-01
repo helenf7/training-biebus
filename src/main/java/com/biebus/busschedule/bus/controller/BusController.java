@@ -36,8 +36,8 @@ public class BusController {
   }
 
   @PutMapping("/update/{id}")
-  String updateMyBusDetail(@RequestBody Bus request){
-    return busService.updateBus(request);
+  String updateMyBusDetail(@PathVariable("id") Long id, @RequestBody Bus request){
+    return busService.updateBus(id, request);
   }
 
   @DeleteMapping("/remove/{id}")

@@ -26,20 +26,18 @@ public class BusServiceImpl implements BusService {
 
   @Override
   public String addNewBus(Bus request){
-    Optional<Bus> existBus = busRepository.findById(request.getId());
-    if(Objects.nonNull(existBus.get())){
-      throw new InternalError("Bus already exist !");
-    }
-    else {
-      busRepository.save(request);
-    }
-    return "Success update bus " + request.getId();
+    busRepository.save(request);
+    return "Success add new bus with bus number: " + request.getBusNumber();
   }
 
   @Override
-  public String updateBus(Bus request){
-    busRepository.save(request);
-    return "Success add new bus with id: " + request.getId();
+  public String updateBus(Long id, Bus request){
+    Optional<Bus> existBus = busRepository.findById(id);
+    if(existBus.isPresent()){
+      busRepository.save(request);
+      return "Success update bus " + id;
+    }
+    throw new InternalError("Bus not exist !");
   }
 
   @Override
