@@ -14,20 +14,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/git chbiebus/schedule")
+@RequestMapping("/biebus/schedule")
 public class BusScheduleController {
 
   @Autowired
   private BusScheduleService busScheduleService;
 
   @GetMapping
-  public List<BusSchedule> fetchBusList(){
+  public List<BusSchedule> fetchScheduleList(){
     return busScheduleService.getAllBusSchedule();
   }
 
   @GetMapping("/{id}")
-  public BusSchedule getBusDetail(@PathVariable("id") String id){
+  public BusSchedule getScheduleDetail(@PathVariable("id") String id){
     return busScheduleService.getDetailScheduleById(id);
+  }
+
+  @GetMapping("/withdestination/{destination}")
+  public List<BusSchedule> getScheduleByDestination(@PathVariable("destination") String destination){
+    return busScheduleService.findScheduleByDestination(destination);
   }
 
   @PostMapping("/add-new")
@@ -36,8 +41,8 @@ public class BusScheduleController {
   }
 
   @PutMapping("/update/{id}")
-  String updateMyScheduleDetail(@RequestBody BusSchedule request){
-    return busScheduleService.updateSchedule(request);
+  String updateMyScheduleDetail(@PathVariable("id") String id, @RequestBody BusSchedule request){
+    return busScheduleService.updateSchedule(id, request);
   }
 
   @DeleteMapping("/remove/{id}")
