@@ -2,7 +2,6 @@ package com.biebus.busschedule.bus.controller;
 
 import com.biebus.busschedule.bus.entity.Bus;
 import com.biebus.busschedule.bus.service.BusService;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/biebus/bus")
@@ -21,13 +22,18 @@ public class BusController {
   private BusService busService;
 
   @GetMapping
-  public List<Bus> fetchBusList(){
+  public Flux<Bus> fetchBusList(){
     return busService.getAllBus();
   }
 
   @GetMapping("/{id}")
-  public Bus getBusDetail(@PathVariable("id") Long id){
+  public Mono<Bus> getBusDetail(@PathVariable("id") String id){
     return busService.getDetailBusById(id);
+  }
+
+  @GetMapping("/with-bus-number/{busNumber}")
+  public Mono<Bus> getBusWithBusNumber(@PathVariable("busNumber") String busNumber){
+    return busService.findBusByBusNumber(busNumber);
   }
 
   @PostMapping("/add-new")
@@ -36,12 +42,12 @@ public class BusController {
   }
 
   @PutMapping("/update/{id}")
-  String updateMyBusDetail(@PathVariable("id") Long id, @RequestBody Bus request){
+  String updateMyBusDetail(@PathVariable("id") String id, @RequestBody Bus request){
     return busService.updateBus(id, request);
   }
 
   @DeleteMapping("/remove/{id}")
-  void removeMyBus(@PathVariable Long id){
+  void removeMyBus(@PathVariable String id){
     busService.removeBus(id);
   }
 }

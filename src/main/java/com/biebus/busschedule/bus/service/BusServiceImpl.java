@@ -7,6 +7,8 @@ import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class BusServiceImpl implements BusService {
@@ -14,34 +16,44 @@ public class BusServiceImpl implements BusService {
   BusRepository busRepository;
 
   @Override
-  public List<Bus> getAllBus(){
+  public Flux<Bus> getAllBus() {
     return busRepository.findAll();
   }
 
   @Override
-  public Bus getDetailBusById(Long id){
-    Optional<Bus> detailBus = busRepository.findById(id);
-    return detailBus.get();
+  public Mono<Bus> getDetailBusById(String id) {
+    Mono<Bus> detailBus = busRepository.findById(id);
+    return detailBus;
+  }
+
+  @Override
+  public Mono<Bus> findBusByBusNumber(String busNumber) {
+    return busRepository.findBusByBusNumber(busNumber);
   }
 
   @Override
   public String addNewBus(Bus request){
-    busRepository.save(request);
+    busRepository.save(request)
+        .subscribe();
     return "Success add new bus with bus number: " + request.getBusNumber();
   }
 
   @Override
-  public String updateBus(Long id, Bus request){
-    Optional<Bus> existBus = busRepository.findById(id);
-    if(existBus.isPresent()){
-      busRepository.save(request);
-      return "Success update bus " + id;
+  public String updateBus(String id, Bus request){
+    Mono<Bus> existBus = busRepository.findById(id);
+    if(Objects.isNull(existBus)){
+      throw new InternalError("Bus not exist !");
     }
-    throw new InternalError("Bus not exist !");
+    busRepository
+        .save(request)
+        .subscribe();
+    return "Success update bus with id : " + id;
   }
 
   @Override
-  public void removeBus(Long request){
-    busRepository.deleteById(request);
+  public void removeBus(String id){
+    busRepository
+        .deleteById(id)
+        .subscribe();
   }
 }

@@ -1,14 +1,16 @@
 package com.biebus.busschedule.bus.service;
 
 import com.biebus.busschedule.bus.entity.Bus;
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 public interface BusService {
 
-  List<Bus> getAllBus();
-  Bus getDetailBusById(Long id);
+  Flux<Bus> getAllBus();
+  Mono<Bus> getDetailBusById(String id);
+  Mono<Bus> findBusByBusNumber(String busNumber);
   String addNewBus(Bus request);
-  String  updateBus(Long id, Bus request);
-  void removeBus(Long request);
+  String  updateBus(String id, Bus request);
+  void removeBus(String id);
 
 }
